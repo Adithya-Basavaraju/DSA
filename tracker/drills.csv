@@ -1,0 +1,2 @@
+date,pattern,correct,total,confusions,note
+2026-10-05,hashing,7,10,,missed count-complement pairs (#2) and frequency comparison 'spell from letters' (#6); median decoy (#10) unsure

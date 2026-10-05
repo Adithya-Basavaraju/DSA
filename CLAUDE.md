@@ -29,13 +29,22 @@ Spaced reviews (D+1/3/7/14 from the start date) show up in `./dsa today`. Do due
   Good note: "shrank window on sum>=k but negatives break monotonicity". Bad note: "got it wrong".
 - Before they code, ask for the five answers in the solution file header (brute force, signal, invariant,
   near-miss pattern, complexity).
+- **Follow-ups never live only in chat.** When a review produces things for the user to do, append them as dated
+  `# TODO` comments at the bottom of the file they apply to (primitive.py, a problem file, notes.md). Check off or
+  remove them when the user completes them.
 - Run the CLI yourself to log things when the user reports results in chat. Confirm the result category if unclear.
 - Keep teaching to the point. The user wants patterns and invariants, not memorised LeetCode solutions.
 
 ## Recognition drill format
 
 Give 8-10 short problem statements (2-3 lines, LeetCode-style but unnamed). For drills on a single pattern, mix in
-3-4 decoys from earlier patterns. The user answers with: pattern → signal → invariant → closest competitor and why
+3-4 decoys from earlier patterns (or from later ones if there are no earlier ones yet). Every prompt must include:
+- **at least one small example** (`input → output`, with a few words on why when it's not obvious), and
+- **the constraints that remove ambiguity**: reuse rules ("each letter used at most once per word"), value ranges
+  (negatives allowed?), sorted or not, required complexity/space if it's the deciding signal.
+
+The user asked for this: ambiguous wording makes them miss for the wrong reason, and the drill should test
+recognition, not reading the question right. The user answers with: pattern → signal → invariant → closest competitor and why
 it's weaker. Grade each, explain misses briefly, then log:
 `./dsa drill <id> <correct>/<total> --confused expected:chosen` (one `--confused` per mix-up, using pattern ids).
 Use `mixed` as the pattern for interleaved review drills across everything started so far.
