@@ -1,0 +1,642 @@
+{
+  "_about": "The 26 pattern families from reference/context.md, in learning order. Problems are [leetcode-slug, difficulty E/M/H, variant]. Edit freely; the CLI reads this file.",
+  "review_stages": {
+    "1": "Implement the primitive from a blank file",
+    "3": "Recognition prompts + implement the primitive",
+    "7": "Solve one problem/variant cold (no notes)",
+    "14": "Mixed recognition + implementation"
+  },
+  "patterns": [
+    {
+      "id": "hashing", "num": 1, "area": "Hash maps",
+      "name": "Hash lookup / frequency / grouping",
+      "signals": ["fast membership or complement lookup", "duplicates", "frequency equivalence (anagrams)", "group equivalent objects by a canonical key", "O(n) wanted on unsorted data"],
+      "primitives": ["frequency counter (dict / Counter)", "complement map (Two Sum style: check BEFORE insert)", "group-by-signature (canonical key -> list)"],
+      "variants": [
+        {"name": "Membership / seen set", "priority": "core"},
+        {"name": "Complement lookup", "priority": "core"},
+        {"name": "Value -> index", "priority": "core"},
+        {"name": "Frequency counting", "priority": "core"},
+        {"name": "Frequency comparison", "priority": "core"},
+        {"name": "Canonical-key grouping", "priority": "core"}
+      ],
+      "problems": [
+        ["contains-duplicate", "E", "Membership / seen set"],
+        ["two-sum", "E", "Complement lookup"],
+        ["valid-anagram", "E", "Frequency comparison"],
+        ["ransom-note", "E", "Frequency counting"],
+        ["first-unique-character-in-a-string", "E", "Frequency counting"],
+        ["contains-duplicate-ii", "E", "Value -> index"],
+        ["group-anagrams", "M", "Canonical-key grouping"],
+        ["longest-consecutive-sequence", "M", "Membership / seen set"]
+      ]
+    },
+    {
+      "id": "two-pointers", "num": 2, "area": "Arrays",
+      "name": "Two pointers",
+      "signals": ["sorted array/string", "pair or triplet condition", "palindrome", "in-place compaction", "answer determined by two boundaries"],
+      "primitives": ["opposite-end pair search on sorted array", "palindrome check", "read/write pointer compaction (remove duplicates)"],
+      "variants": [
+        {"name": "Opposite ends", "priority": "core"},
+        {"name": "Read/write compaction", "priority": "core"},
+        {"name": "Sorted pair sum", "priority": "core"},
+        {"name": "Sorted K-sum", "priority": "core"},
+        {"name": "Two sequences in parallel", "priority": "important"}
+      ],
+      "problems": [
+        ["valid-palindrome", "E", "Opposite ends"],
+        ["remove-duplicates-from-sorted-array", "E", "Read/write compaction"],
+        ["move-zeroes", "E", "Read/write compaction"],
+        ["is-subsequence", "E", "Two sequences in parallel"],
+        ["merge-sorted-array", "E", "Two sequences in parallel"],
+        ["two-sum-ii-input-array-is-sorted", "M", "Sorted pair sum"],
+        ["container-with-most-water", "M", "Opposite ends"],
+        ["3sum", "M", "Sorted K-sum"],
+        ["3sum-closest", "M", "Sorted K-sum"]
+      ]
+    },
+    {
+      "id": "sliding-window", "num": 3, "area": "Arrays",
+      "name": "Sliding window",
+      "signals": ["CONTIGUOUS subarray/substring", "longest / shortest window", "at most / exactly K", "fixed length K", "validity can be updated as left/right move (monotone)"],
+      "primitives": ["fixed-size window sum", "variable window: longest unique substring", "minimum-valid-window skeleton (expand right, shrink while valid)"],
+      "variants": [
+        {"name": "Fixed-size window", "priority": "core"},
+        {"name": "Variable-size window", "priority": "core"},
+        {"name": "Frequency-constrained window", "priority": "core"},
+        {"name": "At-most / exactly-K", "priority": "important"}
+      ],
+      "problems": [
+        ["maximum-average-subarray-i", "E", "Fixed-size window"],
+        ["maximum-number-of-vowels-in-a-substring-of-given-length", "M", "Fixed-size window"],
+        ["longest-substring-without-repeating-characters", "M", "Variable-size window"],
+        ["minimum-size-subarray-sum", "M", "Variable-size window"],
+        ["max-consecutive-ones-iii", "M", "Variable-size window"],
+        ["longest-repeating-character-replacement", "M", "Frequency-constrained window"],
+        ["permutation-in-string", "M", "Frequency-constrained window"],
+        ["find-all-anagrams-in-a-string", "M", "Frequency-constrained window"],
+        ["count-number-of-nice-subarrays", "M", "At-most / exactly-K"],
+        ["subarrays-with-k-different-integers", "H", "At-most / exactly-K"],
+        ["minimum-window-substring", "H", "Frequency-constrained window"]
+      ]
+    },
+    {
+      "id": "prefix-state", "num": 4, "area": "Arrays",
+      "name": "Prefix sums / prefix state + hash map",
+      "signals": ["many range-sum queries", "contiguous sums with NEGATIVE numbers allowed", "how many subarrays with sum/property K", "longest subarray with equal counts", "divisible by K"],
+      "primitives": ["prefix array + range query", "prefix-sum -> count map (remember {0: 1})", "prefix-state -> earliest index map", "prefix/suffix product"],
+      "variants": [
+        {"name": "Prefix sum", "priority": "core"},
+        {"name": "Prefix + suffix", "priority": "core"},
+        {"name": "Prefix state -> count", "priority": "core"},
+        {"name": "Prefix state -> earliest index", "priority": "core"},
+        {"name": "Prefix modulo", "priority": "important"}
+      ],
+      "problems": [
+        ["range-sum-query-immutable", "E", "Prefix sum"],
+        ["find-pivot-index", "E", "Prefix sum"],
+        ["range-sum-query-2d-immutable", "M", "Prefix sum"],
+        ["product-of-array-except-self", "M", "Prefix + suffix"],
+        ["subarray-sum-equals-k", "M", "Prefix state -> count"],
+        ["contiguous-array", "M", "Prefix state -> earliest index"],
+        ["continuous-subarray-sum", "M", "Prefix modulo"],
+        ["subarray-sums-divisible-by-k", "M", "Prefix modulo"]
+      ]
+    },
+    {
+      "id": "binary-search", "num": 5, "area": "Arrays",
+      "name": "Binary search",
+      "signals": ["sorted input", "O(log n) expected", "first/last occurrence", "rotated array", "minimum X such that... / maximum X for which... (monotone predicate)"],
+      "primitives": ["closed-interval exact search", "lower bound", "first-true over a predicate", "rotated-array search"],
+      "variants": [
+        {"name": "Exact lookup", "priority": "core"},
+        {"name": "Lower/upper bound", "priority": "core"},
+        {"name": "First/last true", "priority": "core"},
+        {"name": "Rotated sorted array", "priority": "core"},
+        {"name": "Binary search on answer", "priority": "core"}
+      ],
+      "problems": [
+        ["binary-search", "E", "Exact lookup"],
+        ["search-insert-position", "E", "Lower/upper bound"],
+        ["first-bad-version", "E", "First/last true"],
+        ["find-first-and-last-position-of-element-in-sorted-array", "M", "Lower/upper bound"],
+        ["search-a-2d-matrix", "M", "Exact lookup"],
+        ["find-peak-element", "M", "First/last true"],
+        ["search-in-rotated-sorted-array", "M", "Rotated sorted array"],
+        ["find-minimum-in-rotated-sorted-array", "M", "Rotated sorted array"],
+        ["koko-eating-bananas", "M", "Binary search on answer"],
+        ["capacity-to-ship-packages-within-d-days", "M", "Binary search on answer"],
+        ["split-array-largest-sum", "H", "Binary search on answer"]
+      ]
+    },
+    {
+      "id": "intervals", "num": 6, "area": "Arrays",
+      "name": "Intervals",
+      "signals": ["start/end pairs", "meetings / bookings", "overlap / coverage", "minimum removals so nothing overlaps"],
+      "primitives": ["sort + merge intervals", "greedy max non-overlapping set (sort by END)"],
+      "variants": [
+        {"name": "Merge intervals", "priority": "core"},
+        {"name": "Insert interval", "priority": "important"},
+        {"name": "Non-overlap / interval scheduling", "priority": "important"},
+        {"name": "Intersection of two lists", "priority": "important"},
+        {"name": "Sweep line / concurrent count", "priority": "important"}
+      ],
+      "problems": [
+        ["merge-intervals", "M", "Merge intervals"],
+        ["insert-interval", "M", "Insert interval"],
+        ["non-overlapping-intervals", "M", "Non-overlap / interval scheduling"],
+        ["minimum-number-of-arrows-to-burst-balloons", "M", "Non-overlap / interval scheduling"],
+        ["interval-list-intersections", "M", "Intersection of two lists"],
+        ["car-pooling", "M", "Sweep line / concurrent count"]
+      ]
+    },
+    {
+      "id": "linked-list", "num": 7, "area": "Linked lists",
+      "name": "Linked-list rewiring (reversal, dummy node, merge)",
+      "signals": ["reverse nodes (all / a range / in groups)", "rearrange without changing values", "deleting may remove the head", "build or merge lists"],
+      "primitives": ["prev/curr/next iterative reversal", "recursive reversal", "dummy-head deletion", "merge two sorted lists with a dummy"],
+      "variants": [
+        {"name": "Full reversal", "priority": "core"},
+        {"name": "Recursive reversal", "priority": "important"},
+        {"name": "Reverse sublist", "priority": "core"},
+        {"name": "Reverse K-group", "priority": "important"},
+        {"name": "Dummy node", "priority": "core"},
+        {"name": "Merge lists", "priority": "core"},
+        {"name": "Partition into chains", "priority": "important"},
+        {"name": "Reorder (middle + reverse + merge)", "priority": "important"}
+      ],
+      "problems": [
+        ["reverse-linked-list", "E", "Full reversal"],
+        ["merge-two-sorted-lists", "E", "Merge lists"],
+        ["remove-linked-list-elements", "E", "Dummy node"],
+        ["swap-nodes-in-pairs", "M", "Recursive reversal"],
+        ["reverse-linked-list-ii", "M", "Reverse sublist"],
+        ["add-two-numbers", "M", "Dummy node"],
+        ["remove-duplicates-from-sorted-list-ii", "M", "Dummy node"],
+        ["partition-list", "M", "Partition into chains"],
+        ["odd-even-linked-list", "M", "Partition into chains"],
+        ["reorder-list", "M", "Reorder (middle + reverse + merge)"],
+        ["reverse-nodes-in-k-group", "H", "Reverse K-group"]
+      ]
+    },
+    {
+      "id": "fast-slow", "num": 8, "area": "Linked lists",
+      "name": "Fast/slow & fixed-gap pointers",
+      "signals": ["cycle", "middle node", "nth from the end", "implicit linked list (index -> value)"],
+      "primitives": ["Floyd cycle detection (null checks!)", "find middle", "remove nth from end with fixed gap + dummy", "cycle entry"],
+      "variants": [
+        {"name": "Find middle", "priority": "core"},
+        {"name": "Cycle detection", "priority": "core"},
+        {"name": "Cycle entry", "priority": "important"},
+        {"name": "Fixed gap", "priority": "core"}
+      ],
+      "problems": [
+        ["middle-of-the-linked-list", "E", "Find middle"],
+        ["linked-list-cycle", "E", "Cycle detection"],
+        ["happy-number", "E", "Cycle detection"],
+        ["palindrome-linked-list", "E", "Find middle"],
+        ["remove-nth-node-from-end-of-list", "M", "Fixed gap"],
+        ["delete-the-middle-node-of-a-linked-list", "M", "Find middle"],
+        ["linked-list-cycle-ii", "M", "Cycle entry"],
+        ["find-the-duplicate-number", "M", "Cycle entry"]
+      ]
+    },
+    {
+      "id": "stack", "num": 9, "area": "Stacks",
+      "name": "Stack (matching, evaluation, simulation)",
+      "signals": ["nested structure / brackets", "most recent unfinished thing resolves first", "postfix expressions", "undo / collisions"],
+      "primitives": ["bracket validator", "postfix (RPN) evaluator", "nested decode with a stack of (string, count)"],
+      "variants": [
+        {"name": "Matching", "priority": "core"},
+        {"name": "Expression evaluation", "priority": "core"},
+        {"name": "Nested decoding", "priority": "core"},
+        {"name": "Calculator / infix parsing", "priority": "important"},
+        {"name": "Simulation", "priority": "important"},
+        {"name": "Stack design", "priority": "important"}
+      ],
+      "problems": [
+        ["valid-parentheses", "E", "Matching"],
+        ["baseball-game", "E", "Simulation"],
+        ["min-stack", "M", "Stack design"],
+        ["evaluate-reverse-polish-notation", "M", "Expression evaluation"],
+        ["minimum-remove-to-make-valid-parentheses", "M", "Matching"],
+        ["decode-string", "M", "Nested decoding"],
+        ["simplify-path", "M", "Simulation"],
+        ["asteroid-collision", "M", "Simulation"],
+        ["basic-calculator-ii", "M", "Calculator / infix parsing"],
+        ["basic-calculator", "H", "Calculator / infix parsing"]
+      ]
+    },
+    {
+      "id": "monotonic-stack", "num": 10, "area": "Stacks",
+      "name": "Monotonic stack",
+      "signals": ["next / previous greater or smaller", "nearest boundary", "span or distance to a boundary", "histogram / rectangle / trapped water"],
+      "primitives": ["next-greater indices", "previous-smaller + next-smaller (left/right boundaries)"],
+      "variants": [
+        {"name": "Next greater", "priority": "core"},
+        {"name": "Next smaller", "priority": "core"},
+        {"name": "Previous greater / smaller", "priority": "core"},
+        {"name": "Left/right boundaries", "priority": "core"},
+        {"name": "Circular array", "priority": "important"}
+      ],
+      "problems": [
+        ["next-greater-element-i", "E", "Next greater"],
+        ["final-prices-with-a-special-discount-in-a-shop", "E", "Next smaller"],
+        ["daily-temperatures", "M", "Next greater"],
+        ["online-stock-span", "M", "Previous greater / smaller"],
+        ["next-greater-element-ii", "M", "Circular array"],
+        ["remove-k-digits", "M", "Next smaller"],
+        ["sum-of-subarray-minimums", "M", "Left/right boundaries"],
+        ["largest-rectangle-in-histogram", "H", "Left/right boundaries"],
+        ["trapping-rain-water", "H", "Left/right boundaries"]
+      ]
+    },
+    {
+      "id": "top-k-heap", "num": 11, "area": "Heaps",
+      "name": "Top-K / bounded heap",
+      "signals": ["kth largest/smallest", "top K / K closest", "keep the best K without fully sorting", "repeatedly take the current max/min"],
+      "primitives": ["size-K min-heap stream for K largest", "heapq with (priority, item) tuples; negate for max-heap"],
+      "variants": [
+        {"name": "Kth largest / smallest", "priority": "core"},
+        {"name": "K closest", "priority": "core"},
+        {"name": "Top-K frequent", "priority": "core"},
+        {"name": "Streaming Kth", "priority": "core"},
+        {"name": "Repeated extract (simulation)", "priority": "important"}
+      ],
+      "problems": [
+        ["kth-largest-element-in-a-stream", "E", "Streaming Kth"],
+        ["last-stone-weight", "E", "Repeated extract (simulation)"],
+        ["kth-largest-element-in-an-array", "M", "Kth largest / smallest"],
+        ["top-k-frequent-elements", "M", "Top-K frequent"],
+        ["k-closest-points-to-origin", "M", "K closest"],
+        ["sort-characters-by-frequency", "M", "Top-K frequent"],
+        ["reorganize-string", "M", "Repeated extract (simulation)"]
+      ]
+    },
+    {
+      "id": "heap-orchestration", "num": 12, "area": "Heaps",
+      "name": "Heap orchestration (K-way merge, scheduling, two heaps)",
+      "signals": ["multiple sorted streams", "tasks become available over time", "running median", "repeated best candidate while the set changes"],
+      "primitives": ["K-way merge skeleton (push successor after pop)", "two-heap median insert + rebalance"],
+      "variants": [
+        {"name": "K-way merge", "priority": "core"},
+        {"name": "Scheduling / dynamic priority", "priority": "core"},
+        {"name": "Two heaps", "priority": "important"},
+        {"name": "Lazy deletion", "priority": "stretch"}
+      ],
+      "problems": [
+        ["kth-smallest-element-in-a-sorted-matrix", "M", "K-way merge"],
+        ["find-k-pairs-with-smallest-sums", "M", "K-way merge"],
+        ["task-scheduler", "M", "Scheduling / dynamic priority"],
+        ["single-threaded-cpu", "M", "Scheduling / dynamic priority"],
+        ["merge-k-sorted-lists", "H", "K-way merge"],
+        ["find-median-from-data-stream", "H", "Two heaps"],
+        ["ipo", "H", "Scheduling / dynamic priority"],
+        ["sliding-window-median", "H", "Lazy deletion"]
+      ]
+    },
+    {
+      "id": "tree-dfs", "num": 13, "area": "Trees",
+      "name": "Tree DFS (traversals & path state)",
+      "signals": ["depth / path / ancestors", "root-to-leaf conditions", "process every node with info passed DOWN"],
+      "primitives": ["recursive pre/in/postorder", "iterative inorder with explicit stack", "root-to-leaf path DFS with backtracking path list"],
+      "variants": [
+        {"name": "Preorder", "priority": "core"},
+        {"name": "Inorder", "priority": "core"},
+        {"name": "Postorder", "priority": "core"},
+        {"name": "Iterative DFS", "priority": "core"},
+        {"name": "Path DFS (root -> leaf)", "priority": "core"},
+        {"name": "Ancestor state", "priority": "important"}
+      ],
+      "problems": [
+        ["binary-tree-preorder-traversal", "E", "Preorder"],
+        ["binary-tree-inorder-traversal", "E", "Iterative DFS"],
+        ["binary-tree-postorder-traversal", "E", "Postorder"],
+        ["maximum-depth-of-binary-tree", "E", "Postorder"],
+        ["invert-binary-tree", "E", "Preorder"],
+        ["same-tree", "E", "Preorder"],
+        ["symmetric-tree", "E", "Preorder"],
+        ["path-sum", "E", "Path DFS (root -> leaf)"],
+        ["path-sum-ii", "M", "Path DFS (root -> leaf)"],
+        ["sum-root-to-leaf-numbers", "M", "Path DFS (root -> leaf)"],
+        ["count-good-nodes-in-binary-tree", "M", "Ancestor state"],
+        ["construct-binary-tree-from-preorder-and-inorder-traversal", "M", "Inorder"]
+      ]
+    },
+    {
+      "id": "tree-bfs", "num": 14, "area": "Trees",
+      "name": "Tree BFS (level order)",
+      "signals": ["levels", "nearest / minimum depth", "per-level aggregates", "left/right side view"],
+      "primitives": ["level-order BFS with `for _ in range(len(q))`"],
+      "variants": [
+        {"name": "Level-order", "priority": "core"},
+        {"name": "Level aggregation", "priority": "core"},
+        {"name": "Side view", "priority": "important"},
+        {"name": "Zigzag", "priority": "important"},
+        {"name": "Nearest leaf / min depth", "priority": "important"}
+      ],
+      "problems": [
+        ["average-of-levels-in-binary-tree", "E", "Level aggregation"],
+        ["minimum-depth-of-binary-tree", "E", "Nearest leaf / min depth"],
+        ["binary-tree-level-order-traversal", "M", "Level-order"],
+        ["binary-tree-right-side-view", "M", "Side view"],
+        ["binary-tree-zigzag-level-order-traversal", "M", "Zigzag"],
+        ["maximum-level-sum-of-a-binary-tree", "M", "Level aggregation"],
+        ["populating-next-right-pointers-in-each-node", "M", "Level-order"],
+        ["maximum-width-of-binary-tree", "M", "Level aggregation"]
+      ]
+    },
+    {
+      "id": "tree-postorder", "num": 15, "area": "Trees",
+      "name": "Subtree aggregation (postorder / what does recursion return?)",
+      "signals": ["parent answer depends on finished child answers", "height / balance / diameter", "best path may bend through a node", "LCA"],
+      "primitives": ["height recursion with global best (diameter)", "LCA recursion", "return a tuple of child states (rob / skip)"],
+      "variants": [
+        {"name": "Height / depth", "priority": "core"},
+        {"name": "Diameter (return vs global)", "priority": "core"},
+        {"name": "Maximum path", "priority": "core"},
+        {"name": "Subtree properties", "priority": "core"},
+        {"name": "Lowest common ancestor", "priority": "core"},
+        {"name": "Tree DP", "priority": "important"}
+      ],
+      "problems": [
+        ["balanced-binary-tree", "E", "Height / depth"],
+        ["diameter-of-binary-tree", "E", "Diameter (return vs global)"],
+        ["subtree-of-another-tree", "E", "Subtree properties"],
+        ["lowest-common-ancestor-of-a-binary-tree", "M", "Lowest common ancestor"],
+        ["distribute-coins-in-binary-tree", "M", "Subtree properties"],
+        ["house-robber-iii", "M", "Tree DP"],
+        ["binary-tree-maximum-path-sum", "H", "Maximum path"]
+      ]
+    },
+    {
+      "id": "bst", "num": 16, "area": "Trees",
+      "name": "Binary search trees",
+      "signals": ["BST given: exploit ordering before treating as an ordinary tree", "kth smallest", "validate ordering", "sorted output"],
+      "primitives": ["validate with (low, high) bounds", "iterative inorder / BST iterator", "BST search & insert"],
+      "variants": [
+        {"name": "Search using ordering", "priority": "core"},
+        {"name": "Validate with bounds", "priority": "core"},
+        {"name": "Inorder = sorted", "priority": "core"},
+        {"name": "Kth smallest / largest", "priority": "core"},
+        {"name": "BST LCA", "priority": "core"},
+        {"name": "Build / modify BST", "priority": "important"}
+      ],
+      "problems": [
+        ["search-in-a-binary-search-tree", "E", "Search using ordering"],
+        ["convert-sorted-array-to-binary-search-tree", "E", "Build / modify BST"],
+        ["minimum-absolute-difference-in-bst", "E", "Inorder = sorted"],
+        ["lowest-common-ancestor-of-a-binary-search-tree", "M", "BST LCA"],
+        ["validate-binary-search-tree", "M", "Validate with bounds"],
+        ["kth-smallest-element-in-a-bst", "M", "Kth smallest / largest"],
+        ["binary-search-tree-iterator", "M", "Inorder = sorted"],
+        ["insert-into-a-binary-search-tree", "M", "Build / modify BST"],
+        ["delete-node-in-a-bst", "M", "Build / modify BST"]
+      ]
+    },
+    {
+      "id": "graph-traversal", "num": 17, "area": "Graphs",
+      "name": "Graph DFS/BFS & grids",
+      "signals": ["islands / regions", "reachable? connected?", "number of components", "fewest steps in an unweighted graph or grid"],
+      "primitives": ["adjacency list from edge list", "graph DFS + visited", "graph BFS (mark visited WHEN ENQUEUED)", "4-direction grid flood fill"],
+      "variants": [
+        {"name": "Reachability", "priority": "core"},
+        {"name": "Connected components", "priority": "core"},
+        {"name": "Grid flood fill / islands", "priority": "core"},
+        {"name": "Clone / build graph", "priority": "important"},
+        {"name": "Bipartite / 2-coloring", "priority": "important"},
+        {"name": "Unweighted shortest path", "priority": "core"}
+      ],
+      "problems": [
+        ["flood-fill", "E", "Grid flood fill / islands"],
+        ["find-if-path-exists-in-graph", "E", "Reachability"],
+        ["number-of-islands", "M", "Grid flood fill / islands"],
+        ["max-area-of-island", "M", "Grid flood fill / islands"],
+        ["clone-graph", "M", "Clone / build graph"],
+        ["number-of-provinces", "M", "Connected components"],
+        ["keys-and-rooms", "M", "Reachability"],
+        ["surrounded-regions", "M", "Grid flood fill / islands"],
+        ["pacific-atlantic-water-flow", "M", "Reachability"],
+        ["is-graph-bipartite", "M", "Bipartite / 2-coloring"],
+        ["shortest-path-in-binary-matrix", "M", "Unweighted shortest path"],
+        ["word-ladder", "H", "Unweighted shortest path"]
+      ]
+    },
+    {
+      "id": "multi-source-bfs", "num": 18, "area": "Graphs",
+      "name": "Multi-source BFS",
+      "signals": ["many starting points at once", "spreading over time (rot, fire, infection)", "distance to the NEAREST X for every cell"],
+      "primitives": ["seed queue with ALL sources at distance 0, then level BFS"],
+      "variants": [
+        {"name": "Spreading over time", "priority": "core"},
+        {"name": "Distance field to nearest source", "priority": "core"},
+        {"name": "Component as source", "priority": "important"}
+      ],
+      "problems": [
+        ["rotting-oranges", "M", "Spreading over time"],
+        ["01-matrix", "M", "Distance field to nearest source"],
+        ["as-far-from-land-as-possible", "M", "Distance field to nearest source"],
+        ["map-of-highest-peak", "M", "Distance field to nearest source"],
+        ["shortest-bridge", "M", "Component as source"]
+      ]
+    },
+    {
+      "id": "topo-sort", "num": 19, "area": "Graphs",
+      "name": "Topological sort",
+      "signals": ["prerequisites / dependencies", "build order", "can everything be completed? (directed cycle)", "longest chain of dependencies"],
+      "primitives": ["Kahn's algorithm (indegree + zero-indegree queue)", "three-colour DFS for directed cycles"],
+      "variants": [
+        {"name": "Kahn's BFS ordering", "priority": "core"},
+        {"name": "Directed cycle detection", "priority": "core"},
+        {"name": "DFS three-color", "priority": "core"},
+        {"name": "Leaf peeling", "priority": "important"},
+        {"name": "Prerequisite queries", "priority": "important"},
+        {"name": "DP over topo order", "priority": "important"}
+      ],
+      "problems": [
+        ["course-schedule", "M", "Directed cycle detection"],
+        ["course-schedule-ii", "M", "Kahn's BFS ordering"],
+        ["find-eventual-safe-states", "M", "DFS three-color"],
+        ["minimum-height-trees", "M", "Leaf peeling"],
+        ["course-schedule-iv", "M", "Prerequisite queries"],
+        ["parallel-courses-iii", "H", "DP over topo order"]
+      ]
+    },
+    {
+      "id": "union-find", "num": 20, "area": "Graphs",
+      "name": "Union-Find (DSU)",
+      "signals": ["repeated union/connect operations", "are a and b in the same group?", "undirected cycle while adding edges", "merge identities", "minimum spanning tree"],
+      "primitives": ["DSU with parent, size/rank, path compression, component count"],
+      "variants": [
+        {"name": "Connectivity", "priority": "core"},
+        {"name": "Component count", "priority": "core"},
+        {"name": "Component merging", "priority": "core"},
+        {"name": "Undirected cycle detection", "priority": "core"},
+        {"name": "MST (Kruskal)", "priority": "important"},
+        {"name": "Weighted DSU", "priority": "stretch"}
+      ],
+      "problems": [
+        ["satisfiability-of-equality-equations", "M", "Connectivity"],
+        ["number-of-operations-to-make-network-connected", "M", "Component count"],
+        ["redundant-connection", "M", "Undirected cycle detection"],
+        ["accounts-merge", "M", "Component merging"],
+        ["most-stones-removed-with-same-row-or-column", "M", "Component merging"],
+        ["min-cost-to-connect-all-points", "M", "MST (Kruskal)"],
+        ["evaluate-division", "M", "Weighted DSU"]
+      ]
+    },
+    {
+      "id": "dijkstra", "num": 21, "area": "Graphs",
+      "name": "Dijkstra & weighted shortest paths",
+      "signals": ["weighted edges, all NON-NEGATIVE", "min time / cost / effort", "cheapest currently reachable state", "extra state dimension (stops, fuel) -> expand the state"],
+      "primitives": ["weighted adjacency list + heap Dijkstra with stale-entry skip"],
+      "variants": [
+        {"name": "Standard shortest path", "priority": "core"},
+        {"name": "Minimax / bottleneck path", "priority": "important"},
+        {"name": "Modified state", "priority": "important"},
+        {"name": "0-1 BFS", "priority": "stretch"},
+        {"name": "Bellman-Ford / K edges", "priority": "stretch"}
+      ],
+      "problems": [
+        ["network-delay-time", "M", "Standard shortest path"],
+        ["path-with-maximum-probability", "M", "Standard shortest path"],
+        ["path-with-minimum-effort", "M", "Minimax / bottleneck path"],
+        ["number-of-ways-to-arrive-at-destination", "M", "Modified state"],
+        ["cheapest-flights-within-k-stops", "M", "Bellman-Ford / K edges"],
+        ["swim-in-rising-water", "H", "Minimax / bottleneck path"],
+        ["minimum-obstacle-removal-to-reach-corner", "H", "0-1 BFS"]
+      ]
+    },
+    {
+      "id": "backtracking", "num": 22, "area": "Backtracking",
+      "name": "Backtracking (choose -> explore -> undo)",
+      "signals": ["return ALL subsets/permutations/combinations", "generate every valid string/layout", "partition into valid pieces", "path in a grid where cells can't be reused"],
+      "primitives": ["subsets (start index)", "combinations / combination sum", "permutations with used[]", "sort + skip duplicates", "grid mark -> explore -> restore"],
+      "variants": [
+        {"name": "Subsets", "priority": "core"},
+        {"name": "Combinations", "priority": "core"},
+        {"name": "Reusable candidates", "priority": "core"},
+        {"name": "Permutations", "priority": "core"},
+        {"name": "Duplicate handling", "priority": "core"},
+        {"name": "Generate by rules", "priority": "core"},
+        {"name": "Partitioning", "priority": "core"},
+        {"name": "Grid backtracking", "priority": "core"},
+        {"name": "Constraint satisfaction", "priority": "important"}
+      ],
+      "problems": [
+        ["subsets", "M", "Subsets"],
+        ["combinations", "M", "Combinations"],
+        ["combination-sum", "M", "Reusable candidates"],
+        ["permutations", "M", "Permutations"],
+        ["subsets-ii", "M", "Duplicate handling"],
+        ["combination-sum-ii", "M", "Duplicate handling"],
+        ["permutations-ii", "M", "Duplicate handling"],
+        ["letter-combinations-of-a-phone-number", "M", "Generate by rules"],
+        ["generate-parentheses", "M", "Generate by rules"],
+        ["palindrome-partitioning", "M", "Partitioning"],
+        ["restore-ip-addresses", "M", "Partitioning"],
+        ["word-search", "M", "Grid backtracking"],
+        ["n-queens", "H", "Constraint satisfaction"],
+        ["sudoku-solver", "H", "Constraint satisfaction"]
+      ]
+    },
+    {
+      "id": "dp-1d", "num": 23, "area": "Dynamic programming",
+      "name": "1D DP",
+      "signals": ["sequence of decisions", "count ways / min / max", "take or skip", "same subproblem reached by different choice paths"],
+      "primitives": ["memoised recursion -> bottom-up -> O(1) space (House Robber)", "state sentence: dp[i] means ..."],
+      "variants": [
+        {"name": "Count ways", "priority": "core"},
+        {"name": "Min/max cost", "priority": "core"},
+        {"name": "Take/skip", "priority": "core"},
+        {"name": "Prefix segmentation", "priority": "core"},
+        {"name": "Ending at i (Kadane)", "priority": "important"},
+        {"name": "State machine", "priority": "important"}
+      ],
+      "problems": [
+        ["climbing-stairs", "E", "Count ways"],
+        ["min-cost-climbing-stairs", "E", "Min/max cost"],
+        ["best-time-to-buy-and-sell-stock", "E", "State machine"],
+        ["house-robber", "M", "Take/skip"],
+        ["house-robber-ii", "M", "Take/skip"],
+        ["delete-and-earn", "M", "Take/skip"],
+        ["decode-ways", "M", "Count ways"],
+        ["word-break", "M", "Prefix segmentation"],
+        ["maximum-subarray", "M", "Ending at i (Kadane)"],
+        ["maximum-product-subarray", "M", "Ending at i (Kadane)"],
+        ["best-time-to-buy-and-sell-stock-with-cooldown", "M", "State machine"]
+      ]
+    },
+    {
+      "id": "knapsack", "num": 24, "area": "Dynamic programming",
+      "name": "Knapsack / subset DP",
+      "signals": ["target sum / capacity", "each item once vs unlimited", "split into two equal subsets", "minimum coins / number of ways"],
+      "primitives": ["0/1 boolean subset DP (iterate capacity DESCENDING)", "unbounded min-coin DP (ascending)", "count combinations vs permutations (loop order)"],
+      "variants": [
+        {"name": "0/1 feasibility", "priority": "core"},
+        {"name": "0/1 count", "priority": "important"},
+        {"name": "Unbounded min", "priority": "core"},
+        {"name": "Unbounded count (combinations)", "priority": "core"},
+        {"name": "Ordered count (permutations)", "priority": "important"},
+        {"name": "Two-dimensional capacity", "priority": "stretch"}
+      ],
+      "problems": [
+        ["partition-equal-subset-sum", "M", "0/1 feasibility"],
+        ["last-stone-weight-ii", "M", "0/1 feasibility"],
+        ["target-sum", "M", "0/1 count"],
+        ["coin-change", "M", "Unbounded min"],
+        ["perfect-squares", "M", "Unbounded min"],
+        ["coin-change-ii", "M", "Unbounded count (combinations)"],
+        ["combination-sum-iv", "M", "Ordered count (permutations)"],
+        ["ones-and-zeroes", "M", "Two-dimensional capacity"]
+      ]
+    },
+    {
+      "id": "grid-dp", "num": 25, "area": "Dynamic programming",
+      "name": "Grid DP",
+      "signals": ["move only right/down (acyclic grid)", "count routes", "min/max cost through a matrix", "largest square/shape"],
+      "primitives": ["2D grid DP, then compress to one row"],
+      "variants": [
+        {"name": "Count paths", "priority": "core"},
+        {"name": "Obstacles", "priority": "core"},
+        {"name": "Min/max path", "priority": "core"},
+        {"name": "Shape DP", "priority": "important"},
+        {"name": "Reverse-direction DP", "priority": "stretch"}
+      ],
+      "problems": [
+        ["unique-paths", "M", "Count paths"],
+        ["unique-paths-ii", "M", "Obstacles"],
+        ["minimum-path-sum", "M", "Min/max path"],
+        ["triangle", "M", "Min/max path"],
+        ["maximal-square", "M", "Shape DP"],
+        ["dungeon-game", "H", "Reverse-direction DP"]
+      ]
+    },
+    {
+      "id": "sequence-dp", "num": 26, "area": "Dynamic programming",
+      "name": "Sequence / string DP",
+      "signals": ["compare two strings", "insert / delete / replace", "subsequence (not substring!)", "increasing subsequence", "palindromes"],
+      "primitives": ["LCS table with empty-prefix row/col", "edit-distance table", "LIS O(n^2) and O(n log n)"],
+      "variants": [
+        {"name": "Two-sequence (LCS)", "priority": "core"},
+        {"name": "Edit distance", "priority": "core"},
+        {"name": "LIS", "priority": "core"},
+        {"name": "Palindromic", "priority": "important"},
+        {"name": "Interleaving / matching", "priority": "important"},
+        {"name": "Counting subsequences", "priority": "stretch"}
+      ],
+      "problems": [
+        ["longest-common-subsequence", "M", "Two-sequence (LCS)"],
+        ["delete-operation-for-two-strings", "M", "Two-sequence (LCS)"],
+        ["edit-distance", "M", "Edit distance"],
+        ["longest-increasing-subsequence", "M", "LIS"],
+        ["longest-palindromic-substring", "M", "Palindromic"],
+        ["palindromic-substrings", "M", "Palindromic"],
+        ["longest-palindromic-subsequence", "M", "Palindromic"],
+        ["interleaving-string", "M", "Interleaving / matching"],
+        ["russian-doll-envelopes", "H", "LIS"],
+        ["distinct-subsequences", "H", "Counting subsequences"]
+      ]
+    }
+  ]
+}

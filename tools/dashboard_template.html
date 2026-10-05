@@ -1,0 +1,319 @@
+<title>DSA Pattern Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Schibsted+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: summary strip -> 26-pattern map grouped by area -> two-column insight panels (errors/time | activity/drills) -> queues */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --ink: #12161d;
+  --ink-2: #4b5361;
+  --ink-3: #7c8492;
+  --line: #e1e4ea;
+  --track: #eceef2;
+  --accent: #2a78d6;
+  --accent-soft: #e3eefb;
+  --good: #0ca30c;
+  --warn: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+  --seq-0: #eceef2; --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #2a78d6; --seq-5: #1c5cab;
+  --f-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body: "Schibsted Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111318; --surface: #1a1d23; --ink: #f2f4f7; --ink-2: #b8bfca; --ink-3: #8a919d;
+    --line: #2b3039; --track: #262a32; --accent: #3987e5; --accent-soft: #1d2b3e;
+    --seq-0: #262a32; --seq-1: #184f95; --seq-2: #1c5cab; --seq-3: #256abf; --seq-4: #3987e5; --seq-5: #86b6ef;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111318; --surface: #1a1d23; --ink: #f2f4f7; --ink-2: #b8bfca; --ink-3: #8a919d;
+  --line: #2b3039; --track: #262a32; --accent: #3987e5; --accent-soft: #1d2b3e;
+  --seq-0: #262a32; --seq-1: #184f95; --seq-2: #1c5cab; --seq-3: #256abf; --seq-4: #3987e5; --seq-5: #86b6ef;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: 1.9rem; font-weight: 700; }
+h2 { font-size: 1.15rem; font-weight: 600; }
+h3 { font-size: .78rem; font-family: var(--f-body); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--ink-3); }
+.sub { color: var(--ink-2); font-size: .9rem; }
+
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .82rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.kpi { background: var(--surface); padding: 14px 16px; display: grid; gap: 2px; }
+.kpi b { font: 600 1.6rem/1.1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.kpi small { color: var(--ink-3); font-size: .8rem; }
+
+.area { display: grid; gap: 10px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 8px; border-left-width: 3px; }
+.tile[data-status="not started"] { border-left-color: var(--line); }
+.tile[data-status="not started"] .tname { color: var(--ink-3); }
+.tile[data-status="learning"] { border-left-color: var(--warn); }
+.tile[data-status="usable"] { border-left-color: var(--good); }
+.tile[data-status="mastered"] { border-left-color: var(--accent); }
+.trow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tname { font-weight: 600; font-size: .92rem; line-height: 1.3; min-width: 0; }
+.num { font: 600 .78rem var(--f-mono); color: var(--ink-3); margin-right: 6px; }
+.chip { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; color: var(--ink-2); display: inline-flex; align-items: center; gap: 5px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.pips { display: flex; gap: 4px; }
+.pip { width: 22px; height: 20px; border-radius: 4px; font: 600 .68rem/20px var(--f-mono); text-align: center; background: var(--track); color: var(--ink-3); }
+.pip.on { background: var(--accent); color: #fff; }
+.bar { height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.meta { display: flex; justify-content: space-between; font-size: .76rem; color: var(--ink-2); font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.panel header { align-items: baseline; }
+.empty { color: var(--ink-3); font-size: .88rem; padding: 10px 0; }
+
+.hbars { display: grid; gap: 10px; }
+.hb { display: grid; grid-template-columns: 28px 100px 1fr 64px; gap: 10px; align-items: center; font-size: .86rem; }
+.hb .code { font: 600 .8rem var(--f-mono); text-align: center; border: 1px solid var(--line); border-radius: 4px; padding: 1px 0; }
+.hb .track { position: relative; height: 14px; }
+.hb .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hb .tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.hb .val { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: .8rem; }
+.advice { font-size: .86rem; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 10px; }
+.advice b { color: var(--ink); }
+
+.heat { overflow-x: auto; }
+.heat svg { display: block; }
+.heatkey { display: flex; align-items: center; gap: 4px; font-size: .74rem; color: var(--ink-3); }
+.heatkey i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+
+.list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+.list li:last-child { border-bottom: 0; }
+.list .l { min-width: 0; overflow-wrap: anywhere; }
+.list .r { flex: none; font-family: var(--f-mono); font-size: .78rem; color: var(--ink-2); text-align: right; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible, .tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--bg); font-size: .78rem; padding: 6px 9px; border-radius: 6px; max-width: 260px; z-index: 10; }
+footer { font-size: .78rem; color: var(--ink-3); }
+code { font-family: var(--f-mono); font-size: .85em; background: var(--track); padding: 1px 5px; border-radius: 4px; }
+@media (max-width: 480px) {
+  .hb { grid-template-columns: 24px 1fr 56px; }
+  .hb .name { display: none; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>DSA Pattern Board</h1>
+      <div class="sub" id="subtitle"></div>
+    </div>
+    <div class="legend" aria-label="Status legend">
+      <span><i class="dot" style="background:var(--line)"></i>Not started</span>
+      <span><i class="dot" style="background:var(--warn)"></i>Learning</span>
+      <span><i class="dot" style="background:var(--good)"></i>Usable</span>
+      <span><i class="dot" style="background:var(--accent)"></i>Mastered</span>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Totals"></section>
+
+  <section style="display:grid;gap:18px">
+    <header><h2>Pattern map</h2><span class="sub">Gates: <b class="mono">I</b>nvariant · <b class="mono">R</b>ecognition · <b class="mono">A</b>pplication · <b class="mono">C</b>old · <b class="mono">E</b>dge cases · re<b class="mono">T</b>ention</span></header>
+    <div id="map" style="display:grid;gap:22px"></div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <header><h2>Where mistakes come from</h2><span class="sub" id="errTotal"></span></header>
+      <div class="hbars" id="errors"></div>
+      <div class="advice" id="advice" hidden></div>
+    </div>
+    <div class="panel">
+      <header><h2>Time vs target</h2><span class="sub">avg minutes on solved attempts</span></header>
+      <div class="hbars" id="timing"></div>
+    </div>
+    <div class="panel">
+      <header><h2>Activity</h2><span class="sub">last 12 weeks</span></header>
+      <div class="heat" id="heat"></div>
+      <div class="heatkey"><span>less</span><i style="background:var(--seq-0)"></i><i style="background:var(--seq-1)"></i><i style="background:var(--seq-2)"></i><i style="background:var(--seq-3)"></i><i style="background:var(--seq-4)"></i><i style="background:var(--seq-5)"></i><span>more minutes</span></div>
+    </div>
+    <div class="panel">
+      <header><h2>Recognition drills</h2><span class="sub">score per drill · 80% gate line</span></header>
+      <div id="drills"></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel"><h3>Patterns you mix up</h3><ul class="list" id="confusions"></ul></div>
+    <div class="panel"><h3>Redo queue</h3><ul class="list" id="redo"></ul></div>
+    <div class="panel"><h3>Recent error notes</h3><ul class="list" id="notes"></ul></div>
+    <div class="panel"><h3>Upcoming reviews</h3><ul class="list" id="reviews"></ul></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const DATA = /*__DSA_DATA__*/null;
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const D = DATA || { totals: {}, patterns: [], errors: {}, error_names: {}, by_difficulty: {}, activity: [], drills: [], confusions: [], redo: [], recent_errors: [], streak: 0, today: new Date().toISOString().slice(0, 10) };
+  const T = D.totals || {};
+  const tip = $("tip");
+  function bindTip(el, html) {
+    el.addEventListener("mousemove", (e) => { tip.innerHTML = html; tip.hidden = false; tip.style.left = Math.min(e.clientX + 12, innerWidth - 270) + "px"; tip.style.top = (e.clientY + 14) + "px"; });
+    el.addEventListener("mouseleave", () => { tip.hidden = true; });
+  }
+  const fmtDay = (iso) => new Date(iso + "T00:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+
+  $("subtitle").textContent = DATA ? `${fmtDay(D.today)} · streak ${D.streak} day${D.streak === 1 ? "" : "s"}` : "No data yet. Run ./dsa dashboard to fill this in.";
+
+  // KPIs
+  const kpis = [
+    ["Problems solved", T.solved ?? 0, `${T.attempts ?? 0} attempts`],
+    ["Clean-solve rate", T.clean_rate == null ? "–" : Math.round(T.clean_rate * 100) + "%", "solved with no hints"],
+    ["Patterns usable", `${T.usable ?? 0}/${T.patterns ?? 26}`, `${T.mastered ?? 0} mastered`],
+    ["Hours logged", T.hours ?? 0, `${T.drills ?? 0} drills · ${T.reviews ?? 0} reviews`],
+    ["Streak", `${D.streak ?? 0}d`, "consecutive active days"],
+  ];
+  $("kpis").innerHTML = kpis.map(([l, v, s]) => `<div class="kpi"><small>${l}</small><b>${esc(v)}</b><small>${esc(s)}</small></div>`).join("");
+
+  // Pattern map
+  const STATUS_LABEL = { "not started": "Not started", learning: "Learning", usable: "Usable", mastered: "Mastered" };
+  const STATUS_COLOR = { "not started": "var(--line)", learning: "var(--warn)", usable: "var(--good)", mastered: "var(--accent)" };
+  const GATES = [["invariant", "I"], ["recognition", "R"], ["application", "A"], ["cold", "C"], ["edges", "E"], ["retention", "T"]];
+  const areas = [];
+  (D.patterns || []).forEach((p) => { let a = areas.find((x) => x.name === p.area); if (!a) areas.push(a = { name: p.area, items: [] }); a.items.push(p); });
+  $("map").innerHTML = areas.length ? areas.map((a) => `
+    <div class="area"><h3>${esc(a.name)}</h3><div class="tiles">${a.items.map((p) => {
+      const cov = p.variants.filter((v) => v.covered).length;
+      const pct = p.total_problems ? (p.solved / p.total_problems) * 100 : 0;
+      const nr = p.next_review ? `D+${p.next_review.stage} ${fmtDay(p.next_review.due)}` : (p.started ? "reviews done" : "");
+      return `<div class="tile" tabindex="0" data-status="${p.status}" data-id="${p.id}">
+        <div class="trow"><div class="tname"><span class="num">${String(p.num).padStart(2, "0")}</span>${esc(p.name)}</div>
+          <span class="chip"><i class="dot" style="background:${STATUS_COLOR[p.status]}"></i>${STATUS_LABEL[p.status]}</span></div>
+        <div class="pips">${GATES.map(([g, l]) => `<span class="pip ${p.gates[g] ? "on" : ""}" title="${g}${p.gates[g] ? " ✓ " + p.gates[g] : ""}">${l}</span>`).join("")}</div>
+        <div class="bar" aria-label="${p.solved} of ${p.total_problems} problems solved"><i style="width:${pct}%"></i></div>
+        <div class="meta"><span>${p.solved}/${p.total_problems} solved · ${cov}/${p.variants_total} variants</span><span>${nr}</span></div>
+      </div>`; }).join("")}</div></div>`).join("") : `<div class="empty">No curriculum data.</div>`;
+  document.querySelectorAll(".tile").forEach((el) => {
+    const p = D.patterns.find((x) => x.id === el.dataset.id);
+    const vs = p.variants.map((v) => `${v.covered ? "✓" : "·"} ${esc(v.name)}${v.priority === "core" ? "" : ` <span style="opacity:.6">(${v.priority})</span>`}`).join("<br>");
+    const errs = Object.entries(p.errors).map(([k, n]) => `${k}×${n}`).join(" ");
+    bindTip(el, `<b>${esc(p.name)}</b><br>${p.attempts} attempts · ${p.clean} clean${p.avg_mins ? ` · ${p.avg_mins} min avg` : ""}${errs ? `<br>errors ${errs}` : ""}<br><br>${vs}`);
+  });
+
+  // Errors
+  const names = D.error_names || { R: "Recognition", I: "Invariant", C: "Coding", E: "Edge case", X: "Complexity" };
+  const errTotal = Object.values(D.errors || {}).reduce((a, b) => a + b, 0);
+  $("errTotal").textContent = errTotal ? `${errTotal} tagged` : "";
+  if (!errTotal) {
+    $("errors").innerHTML = `<div class="empty">No mistakes tagged yet. Log attempts with <code>--errors RC</code> to see which kind of mistake you make most.</div>`;
+  } else {
+    const max = Math.max(...Object.values(D.errors));
+    $("errors").innerHTML = Object.keys(names).map((k) => {
+      const n = D.errors[k] || 0;
+      return `<div class="hb" data-k="${k}"><span class="code">${k}</span><span class="name">${names[k]}</span><div class="track"><div class="fill" style="width:${(n / max) * 100}%"></div></div><span class="val">${n} · ${Math.round((n / errTotal) * 100)}%</span></div>`;
+    }).join("");
+    document.querySelectorAll("#errors .hb").forEach((el) => { const n = D.errors[el.dataset.k] || 0; bindTip(el, `${names[el.dataset.k]}: ${n} of ${errTotal} tagged mistakes`); });
+    const top = Object.entries(D.errors).sort((a, b) => b[1] - a[1])[0][0];
+    const ADV = {
+      R: "you're picking the wrong pattern. Ask for mixed recognition drills where the topic is hidden.",
+      I: "you choose the right pattern but break its rule. Restate the invariant before you code.",
+      C: "the idea is right but the code isn't automatic yet. Do more cold rewrites of the primitives.",
+      E: "edge cases slip through. Write three adversarial tests before you code.",
+      X: "complexity misses. Read the target time and space off the constraints first.",
+    };
+    $("advice").hidden = false;
+    $("advice").innerHTML = `<b>Biggest leak: ${names[top]}.</b> ${ADV[top]}`;
+  }
+
+  // Timing
+  const diffs = [["E", "Easy"], ["M", "Medium"], ["H", "Hard"]];
+  const timed = diffs.filter(([d]) => (D.by_difficulty?.[d]?.avg_mins) != null);
+  if (!timed.length) {
+    $("timing").innerHTML = `<div class="empty">No timed solves yet. <code>./dsa new &lt;problem&gt;</code> starts a timer, and <code>./dsa log</code> stops it.</div>`;
+  } else {
+    const scale = Math.max(...timed.map(([d]) => Math.max(D.by_difficulty[d].avg_mins, D.by_difficulty[d].target * 1.5)));
+    $("timing").innerHTML = timed.map(([d, label]) => {
+      const x = D.by_difficulty[d]; const over = x.avg_mins > x.target;
+      return `<div class="hb" data-d="${d}"><span class="code">${d}</span><span class="name">${label}</span><div class="track"><div class="fill" style="width:${(x.avg_mins / scale) * 100}%;background:${over ? "var(--serious)" : "var(--accent)"}"></div><div class="tick" style="left:calc(${(x.target / scale) * 100}% - 1px)"></div></div><span class="val">${x.avg_mins}m${over ? " ▲" : ""}</span></div>`;
+    }).join("") + `<div class="advice">Black tick = target (Easy 15, Medium 30, Hard 45 min). ▲ = average over target.</div>`;
+    document.querySelectorAll("#timing .hb").forEach((el) => { const x = D.by_difficulty[el.dataset.d]; bindTip(el, `${x.attempts} attempts, ${x.clean} clean<br>avg ${x.avg_mins} min vs ${x.target} target<br>${x.within_target}/${x.timed} timed solves within target`); });
+  }
+
+  // Activity heatmap: 12 weeks, columns = weeks (Mon start), rows = weekdays
+  (function () {
+    const byDay = Object.fromEntries((D.activity || []).map((a) => [a.date, a]));
+    const today = new Date(D.today + "T00:00:00");
+    const dow = (today.getDay() + 6) % 7;
+    const start = new Date(today); start.setDate(today.getDate() - dow - 7 * 11);
+    const cell = 14, gap = 3, left = 26, top = 16, W = left + 12 * (cell + gap), H = top + 7 * (cell + gap);
+    const lvl = (a) => !a ? 0 : a.mins >= 120 ? 5 : a.mins >= 90 ? 4 : a.mins >= 60 ? 3 : a.mins >= 30 ? 2 : 1;
+    let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Activity over the last 12 weeks">`;
+    ["M", "", "W", "", "F", "", ""].forEach((l, i) => { if (l) s += `<text x="0" y="${top + i * (cell + gap) + 11}" font-size="10" fill="var(--ink-3)" font-family="var(--f-mono)">${l}</text>`; });
+    let lastMonth = -1;
+    for (let w = 0; w < 12; w++) for (let d = 0; d < 7; d++) {
+      const dt = new Date(start); dt.setDate(start.getDate() + w * 7 + d);
+      if (dt > today) continue;
+      if (d === 0 && dt.getMonth() !== lastMonth) { lastMonth = dt.getMonth(); s += `<text x="${left + w * (cell + gap)}" y="10" font-size="10" fill="var(--ink-3)" font-family="var(--f-mono)">${dt.toLocaleDateString(undefined, { month: "short" })}</text>`; }
+      const iso = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+      const a = byDay[iso];
+      s += `<rect data-iso="${iso}" x="${left + w * (cell + gap)}" y="${top + d * (cell + gap)}" width="${cell}" height="${cell}" rx="3" fill="var(--seq-${lvl(a)})"${iso === D.today ? ' stroke="var(--ink)" stroke-width="1.5"' : ""}></rect>`;
+    }
+    $("heat").innerHTML = s + "</svg>";
+    $("heat").querySelectorAll("rect").forEach((r) => { const a = byDay[r.dataset.iso]; bindTip(r, `${fmtDay(r.dataset.iso)}<br>${a ? `${a.events} logged event${a.events === 1 ? "" : "s"} · ${a.mins} min` : "no activity"}`); });
+  })();
+
+  // Drills
+  (function () {
+    const dr = D.drills || [];
+    if (!dr.length) { $("drills").innerHTML = `<div class="empty">No drills yet. After each learn session, ask Claude for a recognition drill and log it with <code>./dsa drill &lt;pattern&gt; 8/10</code>.</div>`; return; }
+    const W = 520, H = 170, l = 34, r = 10, t = 10, b = 26, n = dr.length;
+    const x = (i) => n === 1 ? l + (W - l - r) / 2 : l + (i * (W - l - r)) / (n - 1);
+    const y = (p) => t + (1 - p) * (H - t - b);
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Recognition drill scores">`;
+    [0, .5, 1].forEach((p) => { s += `<line x1="${l}" x2="${W - r}" y1="${y(p)}" y2="${y(p)}" stroke="var(--line)"/><text x="${l - 6}" y="${y(p) + 4}" text-anchor="end" font-size="10" fill="var(--ink-3)" font-family="var(--f-mono)">${p * 100}%</text>`; });
+    s += `<line x1="${l}" x2="${W - r}" y1="${y(.8)}" y2="${y(.8)}" stroke="var(--good)" stroke-dasharray="4 4" stroke-width="1.5"/><text x="${W - r}" y="${y(.8) - 5}" text-anchor="end" font-size="10" fill="var(--ink-2)" font-family="var(--f-mono)">80% gate</text>`;
+    if (n > 1) s += `<polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${dr.map((d, i) => `${x(i)},${y(d.pct)}`).join(" ")}"/>`;
+    dr.forEach((d, i) => { s += `<circle data-i="${i}" cx="${x(i)}" cy="${y(d.pct)}" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/><circle data-i="${i}" cx="${x(i)}" cy="${y(d.pct)}" r="12" fill="transparent"/>`; });
+    s += `<text x="${l}" y="${H - 6}" font-size="10" fill="var(--ink-3)" font-family="var(--f-mono)">${fmtDay(dr[0].date)}</text><text x="${W - r}" y="${H - 6}" text-anchor="end" font-size="10" fill="var(--ink-3)" font-family="var(--f-mono)">${fmtDay(dr[n - 1].date)}</text></svg>`;
+    $("drills").innerHTML = s;
+    $("drills").querySelectorAll("circle[fill='transparent']").forEach((c) => { const d = dr[+c.dataset.i]; bindTip(c, `${esc(d.pattern)} · ${Math.round(d.pct * 100)}%<br>${fmtDay(d.date)}`); });
+  })();
+
+  // Lists
+  const li = (l, r) => `<li><span class="l">${l}</span><span class="r">${r}</span></li>`;
+  const pname = (id) => (D.patterns.find((p) => p.id === id) || { name: id }).name;
+  $("confusions").innerHTML = (D.confusions || []).length
+    ? D.confusions.map((c) => li(`Needed <b>${esc(pname(c.expected))}</b>, picked ${esc(pname(c.chosen))}`, `×${c.count}`)).join("")
+    : li(`<span class="muted">None logged. Add <code>--confused expected:chosen</code> when you log a drill.</span>`, "");
+  $("redo").innerHTML = (D.redo || []).length
+    ? D.redo.map((r) => li(`<a href="https://leetcode.com/problems/${esc(r.problem)}/" target="_blank" rel="noopener">${esc(r.title)}</a> <span class="muted">· ${esc(r.pattern)}</span>`, `${esc(r.result)}${r.errors ? " · " + esc(r.errors.replace(/;/g, "")) : ""}`)).join("")
+    : li(`<span class="muted">Empty. Every problem you attempted was solved cleanly.</span>`, "");
+  $("notes").innerHTML = (D.recent_errors || []).length
+    ? D.recent_errors.map((r) => li(`<b>${esc(r.problem)}</b> ${r.note ? "· " + esc(r.note) : ""}`, `${esc((r.errors || "–").replace(/;/g, ""))} · ${esc(r.date.slice(5))}`)).join("")
+    : li(`<span class="muted">No notes yet. Use <code>--note "what went wrong"</code>.</span>`, "");
+  const ups = (D.patterns || []).filter((p) => p.next_review).sort((a, b) => a.next_review.due.localeCompare(b.next_review.due));
+  $("reviews").innerHTML = ups.length
+    ? ups.map((p) => { const late = p.next_review.due < D.today, now = p.next_review.due === D.today; return li(esc(p.name), `<span style="color:${late ? "var(--critical)" : "inherit"}">D+${p.next_review.stage} · ${late ? "overdue " : now ? "today " : ""}${fmtDay(p.next_review.due)}</span>`); }).join("")
+    : li(`<span class="muted">Nothing scheduled. Reviews appear once you <code>./dsa start</code> a pattern.</span>`, "");
+
+  $("foot").textContent = DATA ? `Generated ${D.generated.replace("T", " ")} from tracker/*.csv. Regenerate with ./dsa dashboard.` : "";
+})();
+</script>
