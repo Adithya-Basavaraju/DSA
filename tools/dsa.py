@@ -925,7 +925,7 @@ def cmd_dashboard(db: DB, args):
     DASH_OUT.parent.mkdir(exist_ok=True)
     DASH_OUT.write_text(html)
     print(green(f"Wrote {DASH_OUT.relative_to(ROOT)}"))
-    print(dim("  Open locally: open dashboard/index.html, or ask Claude to publish/refresh it."))
+    print(dim("  Open dashboard/index.html in your browser. Appearance follows your system or saved choice."))
 
 
 def cmd_roadmap(db: DB, args):
