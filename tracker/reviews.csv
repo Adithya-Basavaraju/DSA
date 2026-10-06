@@ -1,0 +1,2 @@
+date,pattern,stage,result,note
+2026-10-06,hashing,1,pass,"all 3 primitives correct from blank (check-before-insert held, tuple key); test harness vacuous (lambdas return bool, _run only catches AssertionError); key assumes a-z only; manual dict counter left commented"

@@ -29,6 +29,9 @@ Spaced reviews (D+1/3/7/14 from the start date) show up in `./dsa today`. Do due
   Good note: "shrank window on sum>=k but negatives break monotonicity". Bad note: "got it wrong".
 - Before they code, ask for the five answers in the solution file header (brute force, signal, invariant,
   near-miss pattern, complexity).
+- After `./dsa new <slug>`, replace the `pass` stub in `class Solution` with the exact LeetCode method signature
+  (type hints, body `pass`) and point the test comment at that method (`# assert s.twoSum(...) == ...`). Signature
+  only, never any of the body.
 - **Follow-ups never live only in chat.** When a review produces things for the user to do, append them as dated
   `# TODO` comments at the bottom of the file they apply to (primitive.py, a problem file, notes.md). Check off or
   remove them when the user completes them.
@@ -44,8 +47,10 @@ Give 8-10 short problem statements (2-3 lines, LeetCode-style but unnamed). For 
   (negatives allowed?), sorted or not, required complexity/space if it's the deciding signal.
 
 The user asked for this: ambiguous wording makes them miss for the wrong reason, and the drill should test
-recognition, not reading the question right. The user answers with: pattern → signal → invariant → closest competitor and why
-it's weaker. Grade each, explain misses briefly, then log:
+recognition, not reading the question right. The user answers with: **pattern → signal → approach**: the pattern by name (even a
+later one they haven't studied), the words in the prompt that gave it away, and a one-line approach. Invariant,
+competitor and complexity belong in the solve-phase file header, not the drill (the user found them redundant in drills,
+2026-10-06). Once 2+ patterns are usable, optionally ask "what else did you consider?" for the closest competitor. Grade each, explain misses briefly, then log:
 `./dsa drill <id> <correct>/<total> --confused expected:chosen` (one `--confused` per mix-up, using pattern ids).
 Use `mixed` as the pattern for interleaved review drills across everything started so far.
 

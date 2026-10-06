@@ -2,3 +2,4 @@ date,problem,pattern,variant,difficulty,mins,result,errors,note
 2026-10-05,contains-duplicate,hashing,Membership / seen set,E,4,clean,,"correct, early exit; header questions skipped"
 2026-10-05,valid-anagram,hashing,Frequency comparison,E,11,hint,X;E,first coded sort (near-miss) instead of counting; claimed sort is O(1) space; tests lacked same-length non-anagram case
 2026-10-05,ransom-note,hashing,Frequency counting,E,9,clean,,correct; tested the count-matters case (aa vs ab); header near-miss + complexity left blank
+2026-10-06,two-sum,hashing,Complement lookup,E,6,clean,,"correct one-pass, check-before-insert; tests cover self-match + duplicates; header: invariant blank, signal describes the solution not the problem, near-miss lacks why; no negatives test"

@@ -62,6 +62,10 @@ Canonical code goes in `primitive.py`, written by me. Moving parts:
   run, which is O(n²) in the worst case.
 - **Overwrite vs keep:** nearest-duplicate problems keep the *latest* index. Know which one the problem needs.
 - Other inputs to test: empty input, a single element, all elements equal, negative numbers.
+- **`True` and `1` collide as dict keys:** in Python, `True == 1` and `hash(True) == hash(1)`, so a Counter
+  treats them as the *same* key. `Counter([True, False, True, 1, 1])` is `Counter({True: 4, False: 1})` — the
+  two `True`s and two `1`s all land in one bucket. Same trap with `False` and `0`. Don't mix bools and ints as
+  map keys unless you mean them to merge.
 
 ## Complexity
 - Time: **O(n)** average (O(n·k log k) for group anagrams with sorted keys; O(n·k) with count keys)

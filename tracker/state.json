@@ -3,7 +3,8 @@
     "hashing": {
       "started": "2026-10-05",
       "gates": {
-        "invariant": "2026-10-05"
+        "invariant": "2026-10-05",
+        "cold": "2026-10-06"
       }
     }
   },
